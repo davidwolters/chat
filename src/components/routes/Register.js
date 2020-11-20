@@ -60,7 +60,7 @@ const Register = () => {
 				password: validPassword
 			}, userRegistered);
 		}
-	}, [validPassword, state.auth.username]);
+	}, [validPassword, state.auth.username, dispatch]);
 
 	// On submit, if passwords match, update valid password
 	const onSubmit = event => {

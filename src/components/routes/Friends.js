@@ -30,42 +30,51 @@ const Friends = () => {
 	// Any errors.
 	const [error, setError] = useState(null)
 
-	// When we recieved repsponse from friends hearbeat, load new friends.
-	const friendsCallback = data => {
-		if (data.status === 'success') {
-			dispatch({
-				type: FRIENDS_GET,
-				payload: {
-					friends: data.data.friends,
-					incoming: data.data.incoming,
-					outgoing: data.data.outgoing,
-				},
-			})
-		}
-		else {
-			setError(data.data)
-		}
-	}
-
-
+	const [interval, setInterval] = useState(false)
 
 	// Subscribe to friends listener.
 	useEffect(() => {
-		// Sends a request to get new
-		const updateFriendList = () => {
-			if (state.auth.username === null || state.auth.password === null) {
-				return
-			}
 
-			sendRequest(FRIENDS_GET,
-				{ username: state.auth.username, password: state.auth.password },
-				friendsCallback)
+		if (false === interval) {
+
+			// When we recieved repsponse from friends hearbeat, load new
+			// friends.
+			const friendsCallback = data => {
+				if (data.status === 'success') {
+					dispatch({
+						type: FRIENDS_GET,
+						payload: {
+							friends: data.data.friends,
+							incoming: data.data.incoming,
+							outgoing: data.data.outgoing,
+						},
+					})
+				}
+				else {
+					setError(data.data)
+				}
+			}
+			// Sends a request to get new
+			const updateFriendList = () => {
+				if (state.auth.username === null || state.auth.password ===
+					null) {
+					return
+				}
+
+				sendRequest(FRIENDS_GET,
+					{
+						username: state.auth.username,
+						password: state.auth.password,
+					},
+					friendsCallback)
+			}
+			const interval = setInterval(() => {
+				updateFriendList()
+			}, 2000)
+			setInterval(interval)
 		}
-		const interval = setInterval(() => {
-			updateFriendList()
-		}, 2000)
 		return () => clearInterval(interval)
-	}, [])
+	})
 
 	// Callback for friend request accepted.
 	const friendRequestAccepted = data => {
@@ -73,9 +82,6 @@ const Friends = () => {
 			setError('Something went wrong!')
 		}
 	}
-
-
-
 
 	// Convert state.friends.friends to FriendListItem
 	const friends = useMemo(() => state.friends.friends.map(friend => {
@@ -98,13 +104,13 @@ const Friends = () => {
 			return <FriendListItem key={friend.ID}
 								   friendID={friend.ID} name={friend.username}
 								   status={WAITING_FOR_APPROVAL}/>
-		}), [state.friends.outgoing])
+		}), [state.friends.outgoing, dispatch])
 
 	// Conver state.friends.incoming to FriendListItem
 	const friendRequestsIncoming = useMemo(
 		() => {
-			// Callback from friendlistitem, sends request to accept incoming friend
-			// request.
+			// Callback from friendlistitem, sends request to accept incoming
+			// friend request.
 			const acceptFriendRequest = ID => {
 				sendRequest(FRIENDS_ACCEPT_REQUEST, {
 					username: state.auth.username,
