@@ -62,7 +62,7 @@ const Chat = props => {
 		)
 
 		return () => clearInterval(interval)
-	}, [dispatch, error, state.nav.currentChat])
+	}, [dispatch, error, state.nav.currentChat, state.auth.password, state.auth.username])
 
 	// Callback for when message has been sent.
 	// the messages update themselves, so no need to dispatch.
