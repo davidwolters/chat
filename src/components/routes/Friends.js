@@ -33,6 +33,7 @@ const Friends = () => {
 	const [interval, setInterval] = useState(false)
 
 	// Subscribe to friends listener.
+
 	useEffect(() => {
 
 		if (false === interval) {
@@ -74,7 +75,7 @@ const Friends = () => {
 			setInterval(interval)
 		}
 		return () => clearInterval(interval)
-	})
+	}, [interval, dispatch, state.auth.username, state.auth.password])
 
 	// Callback for friend request accepted.
 	const friendRequestAccepted = data => {
@@ -96,7 +97,7 @@ const Friends = () => {
 							   friendID={friend.ID} name={friend.username}
 							   status={CONFIRMED}
 							   enterChat={enterChat}/>
-	}), [state.friends.friends])
+	}), [state.friends.friends, dispatch])
 
 	// Convert state.friends.outgoing to FriendListItem
 	const friendRequestsSent = useMemo(
@@ -104,7 +105,7 @@ const Friends = () => {
 			return <FriendListItem key={friend.ID}
 								   friendID={friend.ID} name={friend.username}
 								   status={WAITING_FOR_APPROVAL}/>
-		}), [state.friends.outgoing, dispatch])
+		}), [state.friends.outgoing])
 
 	// Conver state.friends.incoming to FriendListItem
 	const friendRequestsIncoming = useMemo(
@@ -126,7 +127,7 @@ const Friends = () => {
 									   onAccept={acceptFriendRequest}
 									   status={WAITING_FOR_ACCEPT}/>
 			})
-		}, [state.friends.incoming])
+		}, [state.friends.incoming, state.auth.username, state.auth.password])
 
 	// Go to add-friend page.
 	const addFriend = () => {

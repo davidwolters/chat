@@ -46,27 +46,7 @@ const Login = props => {
 		})
 	}
 
-	// Callback for when login has returned.
-	const userLoginReturned = data => {
-		setLoading(false);
-		if ( data.status === 'success' ) {
-			dispatch({
-				type: USER_LOGIN,
-				payload: {
-					password,
-					ID: data.data.ID,
-					friends: {
-						friends: data.data.friends,
-						outgoing: data.data.friend_requests_sent,
-						incoming: data.data.friend_requests_pending
-					},
-					meta: data.data.meta
-				}
-			});
-		} else {
-			setError("Incorrect password");
-		}
-	}
+
 
 	// When password state changes, send new request.
 	useEffect(() => {
@@ -98,7 +78,7 @@ const Login = props => {
 				password
 			}, userLoginReturned );
 		}
-	}, [password, state.auth.username]);
+	}, [password, state.auth.username, dispatch]);
 
 	// On form submit, update password state.
 	const onSubmit = event => {
