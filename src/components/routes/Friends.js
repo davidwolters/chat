@@ -30,13 +30,11 @@ const Friends = () => {
 	// Any errors.
 	const [error, setError] = useState(null)
 
-	const [interval, setInterval] = useState(false)
-
 	// Subscribe to friends listener.
 
 	useEffect(() => {
 
-		if (false === interval) {
+
 
 			// When we recieved repsponse from friends hearbeat, load new
 			// friends.
@@ -72,10 +70,9 @@ const Friends = () => {
 			const interval = setInterval(() => {
 				updateFriendList()
 			}, 2000)
-			setInterval(interval)
-		}
-		return () => clearInterval(interval)
-	}, [interval, dispatch, state.auth.username, state.auth.password])
+		
+		return () => {console.log('clear'); clearInterval(interval) }
+	}, [] );
 
 	// Callback for friend request accepted.
 	const friendRequestAccepted = data => {
