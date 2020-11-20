@@ -33,7 +33,6 @@ const AddFriend = props => {
 	// The status of the current friend,  add | loading | added | error
 	const [friendStatus, setFriendStatus] = useState('add')
 
-
 	// Function to check if we have a relation (are friends with, sent or
 	// received request from) with the found user
 	const relationExists = useCallback(ID => {
@@ -44,8 +43,7 @@ const AddFriend = props => {
 		return state.friends.friends.some(matchWithID) ||
 			state.friends.outgoing.some(matchWithID) ||
 			state.friends.incoming.some(matchWithID)
-	}, [foundUser, state.friends.friends, state.friends.incoming, state.friends.outgoing])
-
+	}, [state.friends.friends, state.friends.incoming, state.friends.outgoing])
 
 	// When searchUsername changes, send a request to check if that use exists.
 	useEffect(() => {
@@ -95,9 +93,13 @@ const AddFriend = props => {
 		sendRequest(USER_EXISTS, {
 			username: searchUsername,
 		}, searchResultReturned)
-	}, [searchUsername, state.friends.incoming, state.friends.outgoing, relationExists])
-
-
+	}, [
+		searchUsername,
+		state.friends.incoming,
+		state.friends.outgoing,
+		relationExists,
+		state.auth.username,
+		state.auth.password])
 
 	// Callback from SearchBar's onChange, set a new searchText to trigger a
 	// request.
