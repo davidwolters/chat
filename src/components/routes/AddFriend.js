@@ -81,7 +81,7 @@ const AddFriend = props => {
 		sendRequest(USER_EXISTS, {
 			username: searchUsername,
 		}, searchResultReturned)
-	}, [searchUsername, state.friends.incoming, state.friends.outgoing, relationsExist])
+	}, [searchUsername, state.friends.incoming, state.friends.outgoing, relationExists])
 
 	// Function to check if we have a relation (are friends with, sent or
 	// received request from) with the found user
