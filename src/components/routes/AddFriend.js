@@ -16,7 +16,7 @@ import { Context } from '../../global/Store'
 const AddFriend = props => {
 
 	// The global state.
-	const [state,] = useContext(Context)
+	const [state] = useContext(Context)
 
 	// If we are loading new search results.
 	const [loading, setLoading] = useState(false)
@@ -36,19 +36,6 @@ const AddFriend = props => {
 	// When searchUsername changes, send a request to check if that use exists.
 	useEffect(() => {
 
-		// Function to check if we have a relation (are friends with, sent or
-		// received request from) with the found user
-		const relationExists = useCallback(ID => {
-			const matchWithID = friend => {
-				return parseInt(friend.ID) === parseInt(ID)
-			}
-
-			return state.friends.friends.some(matchWithID) ||
-				state.friends.outgoing.some(matchWithID) ||
-				state.friends.incoming.some(matchWithID)
-		}, [foundUser, state.friends.friends])
-
-
 		// Resopnse handler for search for friend.
 		const searchResultReturned = data => {
 
@@ -64,9 +51,9 @@ const AddFriend = props => {
 					return
 				}
 
-				// If the username doesn't match the current searchUsername, alas
-				// we have typed something more into the search box, we haven't
-				// found anything either.
+				// If the username doesn't match the current searchUsername,
+				// alas we have typed something more into the search box, we
+				// haven't found anything either.
 				if (data.data.user.username !== searchUsername) {
 					setFoundUser(null)
 					return
@@ -94,7 +81,19 @@ const AddFriend = props => {
 		sendRequest(USER_EXISTS, {
 			username: searchUsername,
 		}, searchResultReturned)
-	}, [searchUsername, state.friends.incoming, state.friends.outgoing])
+	}, [searchUsername, state.friends.incoming, state.friends.outgoing, relationsExist])
+
+	// Function to check if we have a relation (are friends with, sent or
+	// received request from) with the found user
+	const relationExists = useCallback(ID => {
+		const matchWithID = friend => {
+			return parseInt(friend.ID) === parseInt(ID)
+		}
+
+		return state.friends.friends.some(matchWithID) ||
+			state.friends.outgoing.some(matchWithID) ||
+			state.friends.incoming.some(matchWithID)
+	}, [foundUser, state.friends.friends])
 
 	// Callback from SearchBar's onChange, set a new searchText to trigger a
 	// request.
