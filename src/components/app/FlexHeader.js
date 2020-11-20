@@ -47,7 +47,7 @@ const Title = styled.h2`
 
 // The header itself.
 const FlexHeader = props => {
-	const [state, dispatch] = useContext(Context);
+	const [, dispatch] = useContext(Context);
 
 	// The go back, returns to friends.
 	const goBack = () => {

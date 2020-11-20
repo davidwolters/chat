@@ -1,8 +1,6 @@
 import React, {
-	useCallback,
 	useContext,
 	useEffect,
-	useMemo,
 	useState,
 } from 'react'
 import { Context } from '../../global/Store'
@@ -28,27 +26,29 @@ const Chat = props => {
 	// Any error messages.
 	const [error, setError] = useState(null)
 
-	// Callback from get messages heartbeat.
-	const recievedMessages = data => {
-		if (data.status === 'success') {
-			setError(null)
-			// Tell our state to update the messages.
-			dispatch({
-				type: MESSAGES_GET,
-				payload: {
-					ID: state.nav.currentChat,
-					messages: data.data.messages,
-				},
-			})
-		}
-		else {
-			// Update error if error.
-			setError(error)
-		}
-	}
+
 
 	// Check for messages every 2 seconds.
 	useEffect(() => {
+		// Callback from get messages heartbeat.
+		const recievedMessages = data => {
+			if (data.status === 'success') {
+				setError(null)
+				// Tell our state to update the messages.
+				dispatch({
+					type: MESSAGES_GET,
+					payload: {
+						ID: state.nav.currentChat,
+						messages: data.data.messages,
+					},
+				})
+			}
+			else {
+				// Update error if error.
+				setError(error)
+			}
+		}
+
 		const interval = setInterval(
 			() => {
 

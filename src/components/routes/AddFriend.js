@@ -16,7 +16,7 @@ import { Context } from '../../global/Store'
 const AddFriend = props => {
 
 	// The global state.
-	const [state, dispatch] = useContext(Context)
+	const [state,] = useContext(Context)
 
 	// If we are loading new search results.
 	const [loading, setLoading] = useState(false)
@@ -35,6 +35,44 @@ const AddFriend = props => {
 
 	// When searchUsername changes, send a request to check if that use exists.
 	useEffect(() => {
+		// Resopnse handler for search for friend.
+		const searchResultReturned = data => {
+
+			if (data.status !== 'success') {
+				setError(data.data)
+			}
+			else {
+				setLoading(false)
+
+				// If the user doesn't exist, we didn't find anything.
+				if (!data.data.user_exists) {
+					setFoundUser(null)
+					return
+				}
+
+				// If the username doesn't match the current searchUsername, alas
+				// we have typed something more into the search box, we haven't
+				// found anything either.
+				if (data.data.user.username !== searchUsername) {
+					setFoundUser(null)
+					return
+				}
+
+				// If we already "know" this person, we haven't found anything.
+				if (relationExists(data.data.user.ID)) {
+					setFoundUser(null)
+					return
+				}
+
+				// set the found user.
+				setFoundUser({
+					ID: data.data.user.ID,
+					username: data.data.user.username,
+				})
+
+			}
+		}
+
 		if (searchUsername === undefined) {
 			return
 		}
@@ -45,7 +83,7 @@ const AddFriend = props => {
 	}, [searchUsername])
 
 	// Function to check if we have a relation (are friends with, sent or
-	// recieved request from) with the found user
+	// received request from) with the found user
 	const relationExists = useCallback(ID => {
 		const matchWithID = friend => {
 			return parseInt(friend.ID) === parseInt(ID)
@@ -54,45 +92,8 @@ const AddFriend = props => {
 		return state.friends.friends.some(matchWithID) ||
 			state.friends.outgoing.some(matchWithID) ||
 			state.friends.incoming.some(matchWithID)
-	}, [foundUser])
+	}, [foundUser, state.friends.friends])
 
-	// Resopnse handler for search for friend.
-	const searchResultReturned = data => {
-
-		if (data.status !== 'success') {
-			setError(data.data)
-		}
-		else {
-			setLoading(false)
-
-			// If the user doesn't exist, we didn't find anything.
-			if (!data.data.user_exists) {
-				setFoundUser(null)
-				return
-			}
-
-			// If the username doesn't match the current searchUsername, alas
-			// we have typed something more into the search box, we haven't
-			// found anything either.
-			if (data.data.user.username !== searchUsername) {
-				setFoundUser(null)
-				return
-			}
-
-			// If we already "know" this person, we haven't found anything.
-			if (relationExists(data.data.user.ID)) {
-				setFoundUser(null)
-				return
-			}
-
-			// set the found user.
-			setFoundUser({
-				ID: data.data.user.ID,
-				username: data.data.user.username,
-			})
-
-		}
-	}
 
 	// Callback from SearchBar's onChange, set a new searchText to trigger a
 	// request.

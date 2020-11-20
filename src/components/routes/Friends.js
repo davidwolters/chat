@@ -22,7 +22,7 @@ import FlexContainer from '../app/FlexContainer'
 import FlexContent from '../app/FlexContent'
 
 // Route to view friends, accept request, enter chats & add friends view.
-const Friends = props => {
+const Friends = () => {
 
 	// Global state
 	const [state, dispatch] = useContext(Context)
@@ -47,19 +47,20 @@ const Friends = props => {
 		}
 	}
 
-	// Sends a request to get new
-	const updateFriendList = () => {
-		if (state.auth.username === null || state.auth.password === null) {
-			return
-		}
 
-		sendRequest(FRIENDS_GET,
-			{ username: state.auth.username, password: state.auth.password },
-			friendsCallback)
-	}
 
 	// Subscribe to friends listener.
 	useEffect(() => {
+		// Sends a request to get new
+		const updateFriendList = () => {
+			if (state.auth.username === null || state.auth.password === null) {
+				return
+			}
+
+			sendRequest(FRIENDS_GET,
+				{ username: state.auth.username, password: state.auth.password },
+				friendsCallback)
+		}
 		const interval = setInterval(() => {
 			updateFriendList()
 		}, 2000)
@@ -73,26 +74,18 @@ const Friends = props => {
 		}
 	}
 
-	// Callback from friendlistitem, sends request to accept incoming friend
-	// request.
-	const acceptFriendRequest = ID => {
-		sendRequest(FRIENDS_ACCEPT_REQUEST, {
-			username: state.auth.username,
-			password: state.auth.password,
-			user: ID,
-		}, friendRequestAccepted)
-	}
 
-	// Enter chat, changes currentpage to chat.
-	const enterChat = ID => {
-		dispatch({
-			type: ENTER_CHAT,
-			payload: ID,
-		})
-	}
+
 
 	// Convert state.friends.friends to FriendListItem
 	const friends = useMemo(() => state.friends.friends.map(friend => {
+		// Enter chat, changes currentpage to chat.
+		const enterChat = ID => {
+			dispatch({
+				type: ENTER_CHAT,
+				payload: ID,
+			})
+		}
 		return <FriendListItem key={friend.ID}
 							   friendID={friend.ID} name={friend.username}
 							   status={CONFIRMED}
@@ -110,6 +103,16 @@ const Friends = props => {
 	// Conver state.friends.incoming to FriendListItem
 	const friendRequestsIncoming = useMemo(
 		() => {
+			// Callback from friendlistitem, sends request to accept incoming friend
+			// request.
+			const acceptFriendRequest = ID => {
+				sendRequest(FRIENDS_ACCEPT_REQUEST, {
+					username: state.auth.username,
+					password: state.auth.password,
+					user: ID,
+				}, friendRequestAccepted)
+			}
+
 			return state.friends.incoming.map(friend => {
 				return <FriendListItem key={friend.ID}
 									   friendID={friend.ID}

@@ -1,18 +1,7 @@
-import axios from 'axios'
-import { USER_EXISTS, USER_LOGIN, USER_REGISTER } from '../actions/types'
+
 
 export const baseURL = 'http://www.davidkodar.nu/chat/index.php/'
 
-const getParams = (action, params) => {
-	return {
-		url: baseURL,
-		method: 'post',
-		params: {
-			action,
-			...params,
-		},
-	}
-}
 
 export const sendRequest = (action, params, callback) => {
 	const formData = new FormData()
@@ -26,10 +15,8 @@ export const sendRequest = (action, params, callback) => {
 		redirect: 'follow',
 	}
 
-	fetch('http://www.davidkodar.nu/chat/index.php', requestOptions).
-		then(response => response.text()).
-		then(result => {callback(JSON.parse(result))}).
-		catch(error => {console.log(error)});
-
-
+	fetch('http://www.davidkodar.nu/chat/index.php', requestOptions)
+		.then(response => response.text())
+		.then(result => {callback(JSON.parse(result))})
+		.catch(error => {console.log(error)});
 }

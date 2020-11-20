@@ -1,5 +1,5 @@
 import React from 'react';
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { Context } from '../../global/Store'
 import { Redirect } from 'react-router-dom'
 
@@ -7,7 +7,7 @@ import { Redirect } from 'react-router-dom'
 const AuthWrapper = ({ children }) => {
 
 	// Get the current page from the global state context.
-	const [state, dispatch] = useContext(Context)
+	const [state, ] = useContext(Context)
 
 	return (
 		<>

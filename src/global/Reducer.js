@@ -26,9 +26,9 @@ export const Reducer = (state, action) => {
 			return enterChat(state, action);
 		case MESSAGES_GET:
 			return loadMessages(state, action);
+		default:
+			return state;
 	}
-
-	return state;
 }
 
 // User exists action handler.

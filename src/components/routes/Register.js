@@ -36,21 +36,22 @@ const Register = () => {
 	// Any errors.
 	const [error, setError] = useState("");
 
-	// Callback for when registered request returns.
-	const userRegistered = data => {
-		if ( data.status === 'success' ) {
-			dispatch({
-				type: USER_REGISTER,
-				payload: {
-					password: validPassword,
-					ID: data.data.ID
-				}
-			})
-		}
-	}
+
 
 	// When validPassword changes, send request to register new user.
 	useEffect( () => {
+		// Callback for when registered request returns.
+		const userRegistered = data => {
+			if ( data.status === 'success' ) {
+				dispatch({
+					type: USER_REGISTER,
+					payload: {
+						password: validPassword,
+						ID: data.data.ID
+					}
+				})
+			}
+		}
 		if ( validPassword !== null ) {
 			setLoading(true);
 
@@ -59,7 +60,7 @@ const Register = () => {
 				password: validPassword
 			}, userRegistered);
 		}
-	}, [validPassword]);
+	}, [validPassword, state.auth.username]);
 
 	// On submit, if passwords match, update valid password
 	const onSubmit = event => {
